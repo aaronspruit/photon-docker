@@ -268,7 +268,7 @@ class PhotonManager:
     def _is_update_due(self) -> bool:
         marker_file = os.path.join(config.DATA_DIR, ".photon-index-updated")
         if not os.path.exists(marker_file):
-            logger.info("No marker file found, update is due")
+            logger.info("No marker file found, update is due now")
             return True
 
         marker_time = datetime.datetime.fromtimestamp(os.path.getmtime(marker_file))
