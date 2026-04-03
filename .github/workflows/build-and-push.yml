@@ -93,30 +93,29 @@ jobs:
                   IS_PRERELEASE="${{ env.IS_PRERELEASE }}"
 
                   REPO_NAME="${{ github.repository }}"
-                  DOCKERHUB_REPO="${REPO_NAME,,}"
                   GHCR_REPO="ghcr.io/${REPO_NAME,,}"
 
-                  TAGS="$DOCKERHUB_REPO:$CONTAINER_VERSION,$GHCR_REPO:$CONTAINER_VERSION"
+                  TAGS="$GHCR_REPO:$CONTAINER_VERSION"
 
                   if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/dev" ]; then
-                    TAGS="$TAGS,$DOCKERHUB_REPO:dev,$GHCR_REPO:dev"
+                    TAGS="$TAGS,$GHCR_REPO:dev"
                   elif [ "$IS_PRERELEASE" == "true" ]; then
-                    TAGS="$TAGS,$DOCKERHUB_REPO:beta,$GHCR_REPO:beta"
+                    TAGS="$TAGS,$GHCR_REPO:beta"
                   else
                     if [[ "$CONTAINER_VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
                       MAJOR="${BASH_REMATCH[1]}"
                       MINOR="${BASH_REMATCH[2]}"
                       PATCH="${BASH_REMATCH[3]}"
 
-                      TAGS="$TAGS,$DOCKERHUB_REPO:$MAJOR,$GHCR_REPO:$MAJOR"
-                      TAGS="$TAGS,$DOCKERHUB_REPO:$MAJOR.$MINOR,$GHCR_REPO:$MAJOR.$MINOR"
-                      TAGS="$TAGS,$DOCKERHUB_REPO:$MAJOR.$MINOR.$PATCH,$GHCR_REPO:$MAJOR.$MINOR.$PATCH"
-                      TAGS="$TAGS,$DOCKERHUB_REPO:latest,$GHCR_REPO:latest"
+                      TAGS="$TAGS,$GHCR_REPO:$MAJOR"
+                      TAGS="$TAGS,$GHCR_REPO:$MAJOR.$MINOR"
+                      TAGS="$TAGS,$GHCR_REPO:$MAJOR.$MINOR.$PATCH"
+                      TAGS="$TAGS,$GHCR_REPO:latest"
 
                       echo "Generated semver tags for version $MAJOR.$MINOR.$PATCH"
                     else
                       echo "Version doesn't match semver pattern, skipping semver tags"
-                      TAGS="$TAGS,$DOCKERHUB_REPO:latest,$GHCR_REPO:latest"
+                      TAGS="$TAGS,$GHCR_REPO:latest"
                     fi
                   fi
 
